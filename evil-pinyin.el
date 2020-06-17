@@ -33,6 +33,9 @@
 ;; install through package.el.
 (eval-when-compile (require 'names))
 
+(require 'evil)
+(require 'pinyinlib)
+
 (define-namespace evil-pinyin-
 
 (defvar with-find-char t
