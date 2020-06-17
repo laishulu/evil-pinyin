@@ -1,0 +1,22 @@
+#+TITLE: README
+[[https://melpa.org/#/smart-input-source][file:https://melpa.org/packages/evil-pinyin-badge.svg]]
+
+* About
+
+* Features
+
+* Install
+直接从 ~melpa~ 安装。
+ 
+* Usage
+#+CAPTION: Evil pinyin mode 
+[[./screenshots/evil-pinyin.png]]
+
+* Configure
+
+| Variable | Buffer | Description | Default |
+|----------+--------+-------------+---------|
+|          |        |             |         |
+|----------+--------+-------------+---------|
+* Credit
+Some of the codes are adapted from [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]].
