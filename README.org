@@ -26,4 +26,4 @@
 |------------------------------+---------------------------------------------+---------|
 
 * Credit
-部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]].
+很多代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]].
