@@ -2,12 +2,12 @@
 [[https://melpa.org/#/smart-input-source][file:https://melpa.org/packages/evil-pinyin-badge.svg]]
 
 * About
-提供一个全局模式 ~evil-pinyin-mode~ ，使 ~evil~ 支持通过拼音首字母搜索。
+提供一个 buffer local 模式 ~evil-pinyin-mode~ ，使 ~evil~ 支持通过拼音首字母搜索。
 
 * Features
 1. 支持 ~evil-find-char~ ，可以通过 ~f/F/t/T~ 行内定位汉字和英文。
 2. 支持 ~evil-snipe~, 可以通过 ~s/S~ 行内定位双汉字和双字母。
-3. 支持 ~/~, ~?~ 以及 ~:s /~ 搜索/替换词组。
+3. 支持 ~/~ 和 ~?~ 搜索任意长度的词组。
 
 * Install
 直接从 ~melpa~ 安装。
@@ -17,13 +17,12 @@
 
 * Configure
 
-| Variable                     | Description                                 | Default |
-|------------------------------+---------------------------------------------+---------|
-| evil-pinyin-with-find-char   | 打开 ~f/F/t/T/s/S~ 行内定位功能。           | ~t~     |
-| evil-pinyin-with-search      | 打开 ~/~, ~?~ 以及 ~:s /~ 全文搜索/替换功能 | ~t~     |
-| evil-pinyin-with-traditional | Include traditional Chinese.                | ~nil~   |
-| evil-pinyin-with-punctuation | Include Chinese punctuation.                | ~t~     |
-|------------------------------+---------------------------------------------+---------|
+| Variable                     | Description                       | Default |
+|------------------------------+-----------------------------------+---------|
+| evil-pinyin-with-search      | 打开 ~/~ 和 ~?~ 搜索功能          | ~t~     |
+| evil-pinyin-with-traditional | Include traditional Chinese.      | ~nil~   |
+| evil-pinyin-with-punctuation | Include Chinese punctuation.      | ~t~     |
+|------------------------------+-----------------------------------+---------|
 
 * Credit
-很多代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]].
+部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]].

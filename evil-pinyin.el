@@ -38,10 +38,7 @@
 
 (define-namespace evil-pinyin-
 
-(defvar with-find-char t
-  "Enable the /find char/ feature.")
-
-(defvar with-search t
+(defvar-local with-search t
   "Enable the /search/ feature.")
 
 (defvar with-traditional nil
@@ -154,59 +151,66 @@
         (keystr (char-to-string key)))
     (cons keystr
           (if regex-p (elt regex-p 1)
-            (-build-regexp keystr)))))
+            (if mode
+                (-build-regexp keystr)
+              keystr)))))
 
 
 (defun -advice (fn &rest args)
   "Advice for FN with ARGS."
-  (-build-regexp (apply fn args)))
+  (if (and mode with-search)
+      (-build-regexp (apply fn args))
+    (apply fn args)))
 
 ;;;###autoload
 (define-minor-mode mode
-  "Global mode to extend evil with ability to search or find Chinese characters by pinyin."
-  :global t
+  "Evil search or find Chinese characters by pinyin."
   :init-value nil
+  :keymp 'evil-pinyin-mode-keymap
+  (advice-add 'evil-ex-pattern-regex :around #'evil-pinyin--advice)
+  (when (featurep 'evil-snipe)
+    (unless -snipe-def
+      (setq -snipe-def (symbol-function 'evil-snipe--process-key)))
+    (fset 'evil-snipe--process-key 'evil-pinyin--snipe-process-key))
+  (if mode
+      (progn
+        (define-key evil-motion-state-local-map
+          [remap evil-find-char]
+          'evil-pinyin-find-char)
+        (define-key evil-motion-state-local-map
+          [remap evil-find-char-backward]
+          'evil-pinyin-find-char-backward)
+        (define-key evil-motion-state-local-map
+          [remap evil-find-char-to]
+          'evil-pinyin-find-char-to)
+        (define-key evil-motion-state-local-map
+          [remap evil-find-char-to-backward]
+          'evil-pinyin-find-char-to-backward)
+        (define-key evil-motion-state-local-map
+          [remap evil-repeat-find-char]
+          'evil-pinyin-repeat-find-char)
+        (define-key evil-motion-state-local-map
+          [remap evil-repeat-find-char-reverse]
+          'evil-pinyin-repeat-find-char-reverse))
+    (define-key evil-motion-state-local-map
+      [remap evil-find-char])
+    (define-key evil-motion-state-local-map
+      [remap evil-find-char-backward] nil)
+    (define-key evil-motion-state-local-map
+      [remap evil-find-char-to] nil)
+    (define-key evil-motion-state-local-map
+      [remap evil-find-char-to-backward] nil)
+    (define-key evil-motion-state-local-map
+      [remap evil-repeat-find-char] nil)
+    (define-key evil-motion-state-local-map
+      [remap evil-repeat-find-char-reverse] nil)))
 
-  (when with-find-char
-    (if mode
-        (progn
-          (define-key evil-motion-state-map
-            [remap evil-find-char]
-            'evil-pinyin-find-char)
-          (define-key evil-motion-state-map
-            [remap evil-find-char-backward]
-            'evil-pinyin-find-char-backward)
-          (define-key evil-motion-state-map
-            [remap evil-find-char-to]
-            'evil-pinyin-find-char-to)
-          (define-key evil-motion-state-map
-            [remap evil-find-char-to-backward]
-            'evil-pinyin-find-char-to-backward)
-          (define-key evil-motion-state-map
-            [remap evil-repeat-find-char]
-            'evil-pinyin-repeat-find-char)
-          (define-key evil-motion-state-map
-            [remap evil-repeat-find-char-reverse]
-            'evil-pinyin-repeat-find-char-reverse)
-          (when (featurep 'evil-snipe)
-            (unless -snipe-def
-              (setq -snipe-def (symbol-function 'evil-snipe--process-key)))
-            (fset 'evil-snipe--process-key 'evil-pinyin--snipe-process-key))))
-    (define-key evil-motion-state-map [remap evil-find-char] nil)
-    (define-key evil-motion-state-map [remap evil-find-char-backward] nil)
-    (define-key evil-motion-state-map [remap evil-find-char-to] nil)
-    (define-key evil-motion-state-map [remap evil-find-char-to-backward] nil)
-    (define-key evil-motion-state-map [remap evil-repeat-find-char] nil)
-    (define-key evil-motion-state-map [remap evil-repeat-find-char-reverse] nil)
-    (when (and (featurep 'evil-snipe) -snipe-def)
-      (fset 'evil-snipe--process-key -snipe-def)))
+(defun clear()
+  "Clear all pollutions."
+  (advice-remove 'evil-ex-pattern-regex #'evil-pinyin--advice)
+  (when (and (featurep 'evil-snipe) -snipe-def)
+    (fset 'evil-snipe--process-key -snipe-def)))
 
-  (when with-search
-    (if mode
-        (advice-add 'evil-ex-pattern-regex :around
-                    #'evil-pinyin--advice)
-      (advice-remove 'evil-ex-pattern-regex
-                     #'evil-pinyin--advice))))
 ;; end of namespace
 )
 
