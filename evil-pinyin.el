@@ -156,12 +156,13 @@
                 (-build-regexp keystr)
               keystr)))))
 
-
 (defun -advice (fn &rest args)
   "Advice for FN with ARGS."
-  (if (and mode with-search)
-      (-build-regexp (apply fn args))
-    (apply fn args)))
+  (let ((re (apply fn args)))
+    (if (and re mode with-search
+             (not (string-match-p "\[.*+?[\\$]" re)))
+        (-build-regexp re)
+      re)))
 
 ;;;###autoload
 (define-minor-mode mode
