@@ -38,8 +38,9 @@
 
 (define-namespace evil-pinyin-
 
-(defvar-local with-search t
+(defvar with-search t
   "Enable the /search/ feature.")
+(make-variable-buffer-local 'evil-pinyin-with-search)
 
 (defvar with-traditional nil
   "Include traditional Chinese.")
