@@ -36,6 +36,7 @@
 (require 'evil)
 (require 'pinyinlib)
 
+;;;###autoload
 (define-namespace evil-pinyin-
 
 (defvar with-search t
@@ -66,7 +67,7 @@
   (interactive "<c><C>")
   (setq count (or count 1))
   (let ((fwd (> count 0)))
-    (setq evil-last-find (list #'evil-pinyin-find-char char fwd))
+    (setq evil-last-find (list #'find-char char fwd))
     (when fwd (forward-char))
     (let ((case-fold-search nil))
       (unless
@@ -97,7 +98,7 @@
         (if (> (or count 1) 0)
             (backward-char)
           (forward-char)))
-    (setcar evil-last-find #'evil-pinyin-find-char-to)))
+    (setcar evil-last-find #'find-char-to)))
 
 (evil-define-motion find-char-to-backward (count char)
   "Move before the previous COUNT'th occurrence of CHAR."
@@ -119,7 +120,7 @@
           (setq count (- count)
                 fwd (not fwd)))
         ;; skip next character when repeating t or T
-        (and (eq cmd #'evil-pinyin-find-char-to)
+        (and (eq cmd #'find-char-to)
              evil-repeat-find-to-skip-next
              (= count 1)
              (or (and fwd (or (= (char-after (1+ (point))) char)
@@ -156,7 +157,7 @@
                 (-build-regexp keystr)
               keystr)))))
 
-(defun -advice (fn &rest args)
+(defun -pattern-regex-advice (fn &rest args)
   "Advice for FN with ARGS."
   (let ((re (apply fn args)))
     (if (and re mode with-search
@@ -164,12 +165,12 @@
         (-build-regexp re)
       re)))
 
-;;;###autoload
+:autoload
 (define-minor-mode mode
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
   :keymp 'evil-pinyin-mode-keymap
-  (advice-add 'evil-ex-pattern-regex :around #'evil-pinyin--advice)
+  (advice-add 'evil-ex-pattern-regex :around #'-advice)
   (when (featurep 'evil-snipe)
     (unless -snipe-def
       (setq -snipe-def (symbol-function 'evil-snipe--process-key)))
@@ -178,22 +179,22 @@
       (progn
         (define-key evil-motion-state-local-map
           [remap evil-find-char]
-          'evil-pinyin-find-char)
+          #'find-char)
         (define-key evil-motion-state-local-map
           [remap evil-find-char-backward]
-          'evil-pinyin-find-char-backward)
+          #'find-char-backward)
         (define-key evil-motion-state-local-map
           [remap evil-find-char-to]
-          'evil-pinyin-find-char-to)
+          #'find-char-to)
         (define-key evil-motion-state-local-map
           [remap evil-find-char-to-backward]
-          'evil-pinyin-find-char-to-backward)
+          #'find-char-to-backward)
         (define-key evil-motion-state-local-map
           [remap evil-repeat-find-char]
-          'evil-pinyin-repeat-find-char)
+          #'repeat-find-char)
         (define-key evil-motion-state-local-map
           [remap evil-repeat-find-char-reverse]
-          'evil-pinyin-repeat-find-char-reverse))
+          #'repeat-find-char-reverse))
     (define-key evil-motion-state-local-map
       [remap evil-find-char])
     (define-key evil-motion-state-local-map
@@ -209,7 +210,7 @@
 
 (defun clear()
   "Clear all pollutions."
-  (advice-remove 'evil-ex-pattern-regex #'evil-pinyin--advice)
+  (advice-remove 'evil-ex-pattern-regex #'-pattern-regex-advice)
   (when (and (featurep 'evil-snipe) -snipe-def)
     (fset 'evil-snipe--process-key -snipe-def)))
 
