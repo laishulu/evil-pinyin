@@ -164,7 +164,7 @@
 (defun evil-ex-pattern-regex-advice (fn &rest args)
   "Advice for FN evil-ex-pattern-regex with ARGS args."
   (let ((re (apply fn args)))
-    (if (and mode re mode with-search
+    (if (and mode re with-search
              (not (string-match-p "\[.*+?[\\$]" re)))
         (-build-regexp re)
       re)))
