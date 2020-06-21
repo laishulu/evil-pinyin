@@ -164,7 +164,7 @@
 (defun evil-ex-pattern-regex-advice (fn &rest args)
   "Advice for FN evil-ex-pattern-regex with ARGS args."
   (let ((re (apply fn args)))
-    (if (and mode re with-search
+    (if (and mode re mode with-search
              (not (string-match-p "\[.*+?[\\$]" re)))
         (-build-regexp re)
       re)))
@@ -211,6 +211,12 @@
       [remap evil-repeat-find-char] nil)
     (define-key evil-motion-state-local-map
       [remap evil-repeat-find-char-reverse] nil)))
+
+:autoload
+(define-globalized-minor-mode
+  evil-pinyin-global-mode
+  evil-pinyin-mode
+  evil-pinyin-mode)
 
 (defun clear()
   "Clear all pollutions."
