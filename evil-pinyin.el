@@ -214,7 +214,7 @@
 
 :autoload
 (define-globalized-minor-mode
-  evil-pinyin-global-mode
+  global-evil-pinyin-mode
   evil-pinyin-mode
   evil-pinyin-mode)
 
