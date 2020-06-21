@@ -3,7 +3,7 @@
 
 * About
 提供一个 buffer local 模式 ~evil-pinyin-mode~ ，使 ~evil~ 支持通过拼音首字母搜索。
-还提供了一个全局模式 ~evil-pinyin-global-mode~ 以对所有buffer生效。
+还提供了一个全局模式 ~global-evil-pinyin-mode~ 以对所有buffer生效。
 
 * Features
 1. 支持 ~evil-find-char~ ，可以通过 ~f/F/t/T~ 行内定位汉字和英文。
