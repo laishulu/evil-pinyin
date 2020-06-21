@@ -145,8 +145,6 @@
 ;; ---------------------- ;;
 ;; evil-snipe integration ;;
 ;; ---------------------- ;;
-(defvar -snipe-def nil)
-
 (defun -snipe-process-key (key)
   "Process the snipe KEY."
   (let ((regex-p (assoc key evil-snipe-aliases))
@@ -157,10 +155,16 @@
                 (-build-regexp keystr)
               keystr)))))
 
-(defun -pattern-regex-advice (fn &rest args)
-  "Advice for FN with ARGS."
+(defun evil-snipe--process-key-advice (fn key)
+  "Advice for FN evil-snipe--process-key with ARGS args."
+  (if mode
+      (funcall #'-snipe-process-key key)
+    (funcall fn key)))
+
+(defun evil-ex-pattern-regex-advice (fn &rest args)
+  "Advice for FN evil-ex-pattern-regex with ARGS args."
   (let ((re (apply fn args)))
-    (if (and re mode with-search
+    (if (and mode re mode with-search
              (not (string-match-p "\[.*+?[\\$]" re)))
         (-build-regexp re)
       re)))
@@ -170,11 +174,11 @@
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
   :keymp 'evil-pinyin-mode-keymap
-  (advice-add 'evil-ex-pattern-regex :around #'-advice)
+  (advice-add 'evil-ex-pattern-regex :around
+              #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
-    (unless -snipe-def
-      (setq -snipe-def (symbol-function 'evil-snipe--process-key)))
-    (fset 'evil-snipe--process-key 'evil-pinyin--snipe-process-key))
+    (advice-add 'evil-snipe--process-key :around
+                #'evil-snipe--process-key-advice))
   (if mode
       (progn
         (define-key evil-motion-state-local-map
@@ -196,7 +200,7 @@
           [remap evil-repeat-find-char-reverse]
           #'repeat-find-char-reverse))
     (define-key evil-motion-state-local-map
-      [remap evil-find-char])
+      [remap evil-find-char] nil)
     (define-key evil-motion-state-local-map
       [remap evil-find-char-backward] nil)
     (define-key evil-motion-state-local-map
@@ -210,9 +214,10 @@
 
 (defun clear()
   "Clear all pollutions."
-  (advice-remove 'evil-ex-pattern-regex #'-pattern-regex-advice)
-  (when (and (featurep 'evil-snipe) -snipe-def)
-    (fset 'evil-snipe--process-key -snipe-def)))
+  (advice-remove 'evil-ex-pattern-regex #'evil-ex-pattern-regex-advice)
+  (when (featurep 'evil-snipe)
+    (advice-remove 'evil-snipe--process-key #'evil-snipe--process-key-advice)
+))
 
 ;; end of namespace
 )
