@@ -173,12 +173,13 @@
 (define-minor-mode mode
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
+  :keymp 'evil-pinyin-mode-keymap
   (advice-add 'evil-ex-pattern-regex :around
               #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
     (advice-add 'evil-snipe--process-key :around
                 #'evil-snipe--process-key-advice))
-  (if mode
+  (if (and mode evil-motion-state-local-map)
       (progn
         (define-key evil-motion-state-local-map
           [remap evil-find-char]
@@ -198,18 +199,20 @@
         (define-key evil-motion-state-local-map
           [remap evil-repeat-find-char-reverse]
           #'repeat-find-char-reverse))
-    (define-key evil-motion-state-local-map
-      [remap evil-find-char] nil)
-    (define-key evil-motion-state-local-map
-      [remap evil-find-char-backward] nil)
-    (define-key evil-motion-state-local-map
-      [remap evil-find-char-to] nil)
-    (define-key evil-motion-state-local-map
-      [remap evil-find-char-to-backward] nil)
-    (define-key evil-motion-state-local-map
-      [remap evil-repeat-find-char] nil)
-    (define-key evil-motion-state-local-map
-      [remap evil-repeat-find-char-reverse] nil)))
+
+    (when evil-motion-state-local-map
+      (define-key evil-motion-state-local-map
+        [remap evil-find-char] nil)
+      (define-key evil-motion-state-local-map
+        [remap evil-find-char-backward] nil)
+      (define-key evil-motion-state-local-map
+        [remap evil-find-char-to] nil)
+      (define-key evil-motion-state-local-map
+        [remap evil-find-char-to-backward] nil)
+      (define-key evil-motion-state-local-map
+        [remap evil-repeat-find-char] nil)
+      (define-key evil-motion-state-local-map
+        [remap evil-repeat-find-char-reverse] nil))))
 
 :autoload
 (define-globalized-minor-mode
@@ -221,8 +224,7 @@
   "Clear all pollutions."
   (advice-remove 'evil-ex-pattern-regex #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
-    (advice-remove 'evil-snipe--process-key #'evil-snipe--process-key-advice)
-))
+    (advice-remove 'evil-snipe--process-key #'evil-snipe--process-key-advice)))
 
 ;; end of namespace
 )
