@@ -173,7 +173,6 @@
 (define-minor-mode mode
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
-  :keymp 'evil-pinyin-mode-keymap
   (advice-add 'evil-ex-pattern-regex :around
               #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
