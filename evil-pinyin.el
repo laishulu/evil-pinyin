@@ -142,38 +142,10 @@
   :type inclusive
   (repeat-find-char (- (or count 1))))
 
-;; ---------------------- ;;
-;; evil-snipe integration ;;
-;; ---------------------- ;;
-(defun -snipe-process-key (key)
-  "Process the snipe KEY."
-  (let ((regex-p (assoc key evil-snipe-aliases))
-        (keystr (char-to-string key)))
-    (cons keystr
-          (if regex-p (elt regex-p 1)
-            (if mode
-                (-build-regexp keystr)
-              keystr)))))
-
-(defun evil-snipe--process-key-advice (fn key)
-  "Advice for FN evil-snipe--process-key with ARGS args."
-  (if mode
-      (funcall #'-snipe-process-key key)
-    (funcall fn key)))
-
-(defun evil-ex-pattern-regex-advice (fn &rest args)
-  "Advice for FN evil-ex-pattern-regex with ARGS args."
-  (let ((re (apply fn args)))
-    (if (and mode re mode with-search
-             (not (string-match-p "\[.*+?[\\$]" re)))
-        (-build-regexp re)
-      re)))
-
 :autoload
 (define-minor-mode mode
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
-  :keymp 'evil-pinyin-mode-keymap
   (advice-add 'evil-ex-pattern-regex :around
               #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
@@ -214,11 +186,33 @@
       (define-key evil-motion-state-local-map
         [remap evil-repeat-find-char-reverse] nil))))
 
-:autoload
-(define-globalized-minor-mode
-  global-evil-pinyin-mode
-  evil-pinyin-mode
-  evil-pinyin-mode)
+;; ---------------------- ;;
+;; evil-snipe integration ;;
+;; ---------------------- ;;
+(defun -snipe-process-key (key)
+  "Process the snipe KEY."
+  (when (featurep 'evil-snipe)
+    (let ((regex-p (assoc key evil-snipe-aliases))
+          (keystr (char-to-string key)))
+      (cons keystr
+            (if regex-p (elt regex-p 1)
+              (if mode
+                  (-build-regexp keystr)
+                keystr))))))
+
+(defun evil-snipe--process-key-advice (fn key)
+  "Advice for FN evil-snipe--process-key with KEY."
+  (if mode
+      (funcall #'-snipe-process-key key)
+    (funcall fn key)))
+
+(defun evil-ex-pattern-regex-advice (fn &rest args)
+  "Advice for FN evil-ex-pattern-regex with ARGS args."
+  (let ((re (apply fn args)))
+    (if (and mode re mode with-search
+             (not (string-match-p "\[.*+?[\\$]" re)))
+        (-build-regexp re)
+      re)))
 
 (defun clear()
   "Clear all pollutions."
@@ -228,6 +222,12 @@
 
 ;; end of namespace
 )
+
+:autoload
+(define-globalized-minor-mode
+  global-evil-pinyin-mode
+  evil-pinyin-mode
+  evil-pinyin-mode)
 
 (provide 'evil-pinyin)
 ;;; evil-pinyin.el ends here
