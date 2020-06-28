@@ -49,6 +49,9 @@
 (defvar with-punctuation t
   "Include Chinese punctuation.")
 
+;; variable defined by evil-snipe
+(defvar evil-snipe-aliases)
+
 (defun -build-regexp (thing)
   "Build regexp form THING for search."
   (cond
@@ -201,13 +204,13 @@
                 keystr))))))
 
 (defun evil-snipe--process-key-advice (fn key)
-  "Advice for FN evil-snipe--process-key with KEY."
+  "Advice for FN `evil-snipe--process-key' with KEY."
   (if mode
       (funcall #'-snipe-process-key key)
     (funcall fn key)))
 
 (defun evil-ex-pattern-regex-advice (fn &rest args)
-  "Advice for FN evil-ex-pattern-regex with ARGS args."
+  "Advice for FN `evil-ex-pattern-regex' with ARGS args."
   (let ((re (apply fn args)))
     (if (and mode re mode with-search
              (not (string-match-p "\[.*+?[\\$]" re)))
