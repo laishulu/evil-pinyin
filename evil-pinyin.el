@@ -50,7 +50,7 @@
   "Include Chinese punctuation.")
 
 ;; variable defined by evil-snipe
-(defvar evil-snipe-aliases)
+(defvar ::evil-snipe-aliases)
 
 (defun -build-regexp (thing)
   "Build regexp form THING for search."
