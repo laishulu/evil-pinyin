@@ -10,7 +10,7 @@
 2. 支持 ~evil-snipe~, 可以通过 ~s/S~ 行内定位双汉字和双字母。
 3. 支持 ~/~ 和 ~?~ 搜索任意长度的词组。注意 ~/~ 要绑定到
    ~evil-ex-search-forward~ ，而不是 ~evil-search-forward~ ，相应地， ~?~ ~n~
-   ~p~ 等也要绑定到 ~evil-ex-search~ 相关的函数上。
+   ~N~ 等也要绑定到相应的 ~evil-ex-search~ 函数上。
 
 * Install
 直接从 ~melpa~ 安装。
