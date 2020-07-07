@@ -45,14 +45,17 @@
 (defvar with-punctuation t
   "Include Chinese punctuation.")
 
-(defvar scheme 'simplified-quanpin
+(defvar scheme 'simplified-quanpin-all
   "Pinyin scheme.
 
 Possible values:
-- 'simplified-quanpin: quanpin for all simplified characters.
-- 'simplified-common: quanpin of common used 3500 simplified characters.
-- 'simplified-xiaohe: xiaohe shuangpin for all simplified characters.
-- 'traditional-quanpin: quanpin for all traditional characters.")
+- 'simplified-quanpin-all: quanpin for all simplified characters.
+- 'simplified-quanpin-common: quanpin of common used 3500 simplified characters.
+- 'simplified-xiaohe-all: xiaohe shuangpin for all simplified characters.
+- 'simplified-pinyinjiajia-all: pinyinjiajia shuangpin for all simplified characters.
+- 'simplified-ziranma-all: ziranma shuangpin for all simplified characters.
+- 'simplified-weiruan-all: weiruan shuangpin for all simplified characters.
+- 'traditional-quanpin-all: quanpin for all traditional characters.")
 
 ;; variable defined by evil-snipe
 (defvar ::evil-snipe-aliases)
@@ -75,25 +78,28 @@ Possible values:
   "Get char table for simplified Chinese."
   (cond
    (; use simplified quanpin
-    (eq scheme 'simplified-quanpin)
-    (unless (boundp 'evil-pinyin--simplified-quanpin)
-      (-load-char-table-file "simplified-quanpin"))
-    -simplified-quanpin)
+    (eq scheme 'simplified-quanpin-all)
+    (unless (boundp 'evil-pinyin--simplified-quanpin-all)
+      (-load-char-table-file "simplified-quanpin-all"))
+    -simplified-quanpin-all)
    (; use simplified common
     (eq scheme 'simplified-common)
-    (unless (boundp 'evil-pinyin--simplified-common)
-      (-load-char-table-file "simplified-common"))
-    -simplified-common)
+    (unless (boundp 'evil-pinyin--simplified-quanpin-common)
+      (-load-char-table-file "simplified-quanpin-common"))
+    -simplified-quanpin-common)
    (; use simplified xiaohe
-    (eq scheme 'simplified-xiaohe)
-    (unless (boundp 'evil-pinyin--simplified-xiaohe)
-      (-load-char-table-file "simplified-xiaohe"))
-    -simplified-xiaohe)
+    (memq scheme (list 'simplified-xiaohe-all
+                       'simplified-pinyinjiajia-all
+                       'simplified-ziranma-all
+                       'simplified-weiruan-all))
+    (unless (boundp 'evil-pinyin--simplified-xiaohe-all)
+      (-load-char-table-file "simplified-xiaohe-all"))
+    -simplified-xiaohe-all)
    (; use tradtional quanpin
-    (eq scheme 'traditional-quanpin)
-    (unless (boundp 'evil-pinyin--traditional-quanpin)
-      (-load-char-table-file "traditional-quanpin"))
-    -simplified-xiaohe)))
+    (eq scheme 'traditional-quanpin-all)
+    (unless (boundp 'evil-pinyin--traditional-quanpin-all)
+      (-load-char-table-file "traditional-quanpin-all"))
+    -simplified-xiaohe-all)))
 
 (defun -get-punctuation-alist()
   "Get punctuation alist."

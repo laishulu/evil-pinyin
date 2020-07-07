@@ -1,4 +1,4 @@
-(defconst evil-pinyin--simplified-common
+(defconst evil-pinyin--simplified-quanpin-common
   '(
     ;; A
     "啊阿埃挨哎唉哀皑癌蔼矮艾碍爱隘鞍氨安俺按暗岸胺案肮昂盎凹敖熬翱袄傲奥懊澳"

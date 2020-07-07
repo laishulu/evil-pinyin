@@ -12,7 +12,8 @@
    Emacs 原始的实现 ~isearch~, 需要切换成 ~evil~ 自己的实现 ~evil-search~ ：
    ~(evil-select-search-module 'evil-search-module 'evil-search)~ ，但有些包（如
    [[https://github.com/hlissner/doom-emacs][~doom~]]）默认已切换。
-4. 支持多种拼音方案：简体字-全拼，常用3500简体字-全拼，简体字-小鹤双拼，繁字体-
+4. 支持多种拼音方案：简体字-全拼，常用3500简体字-全拼，简体字-双拼（小鹤，自然码，
+   拼音加加，微软），繁字体-
    全拼。
 
 * Install
@@ -27,19 +28,19 @@
 ```
 (use-package evil-pinyin
   :init
-  ;;(setq evil-pinyin-scheme 'simplified-xiaohe)
+  ;;(setq evil-pinyin-scheme 'simplified-xiaohe-all)
 
   :config
   ;;(evil-select-search-module 'evil-search-module 'evil-search)
   (global-evil-pinyin-mode))
 ```
 
-| Variable                     | Description              | Default              |
-|------------------------------+--------------------------+----------------------|
-| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin~ |
-| evil-pinyin-with-search      | 打开 ~/~ 和 ~?~ 搜索功能 | ~t~                  |
-| evil-pinyin-with-punctuation | 包含符号.                | ~t~                  |
-|------------------------------+--------------------------+----------------------|
+| Variable                     | Description              | Default                  |
+|------------------------------+--------------------------+--------------------------|
+| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin-all~ |
+| evil-pinyin-with-search      | 打开 ~/~ 和 ~?~ 搜索功能 | ~t~                      |
+| evil-pinyin-with-punctuation | 包含符号.                | ~t~                      |
+|------------------------------+--------------------------+--------------------------|
 
 * Credit
 部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]] 和 [[https://github.com/cute-jumper/pinyinlib.el][pinyinlib]]
