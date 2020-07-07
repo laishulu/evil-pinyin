@@ -10,8 +10,8 @@
 2. 支持 ~evil-snipe~, 可以通过 ~s/S~ 行内定位双汉字和双字母。
 3. 支持 ~/~ 和 ~?~ 搜索任意长度的词组。注意： ~evil~ 的搜索模块默认使用了
    Emacs 原始的实现 ~isearch~, 需要切换成 ~evil~ 自己的实现 ~evil-search~ ：
-   ~(setq evil-search-module 'evil-search)~ ，不过有些包（如 [[https://github.com/hlissner/doom-emacs][~doom~]]）默认就已经
-   做了这个切换。
+   ~(evil-select-search-module 'evil-search-module 'evil-search)~ ，不过有些包
+   （如 [[https://github.com/hlissner/doom-emacs][~doom~]]）默认已切换。
 
 * Install
 直接从 ~melpa~ 安装。
