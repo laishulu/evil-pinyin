@@ -3,7 +3,7 @@
 ;; URL: https://github.com/laishulu/evil-pinyin
 ;; Created: June 17th, 2020
 ;; Keywords: extensions
-;; Package-Requires: ((emacs "25") (names "0.5") (evil "1") (pinyinlib "0.1.1"))
+;; Package-Requires: ((emacs "25") (names "0.5") (evil "1"))
 ;; Version: 1.0
 
 ;; This file is not part of GNU Emacs.
@@ -34,7 +34,6 @@
 (eval-when-compile (require 'names))
 
 (require 'evil)
-(require 'pinyinlib)
 
 ;;;###autoload
 (define-namespace evil-pinyin-
@@ -43,26 +42,110 @@
   "Enable the /search/ feature.")
 (make-variable-buffer-local 'evil-pinyin-with-search)
 
-(defvar with-traditional nil
-  "Include traditional Chinese.")
-
 (defvar with-punctuation t
   "Include Chinese punctuation.")
 
+(defvar scheme 'simplified-quanpin
+  "Pinyin scheme.
+
+Possible values:
+- 'simplified-quanpin: quanpin for all simplified characters.
+- 'simplified-common: quanpin of common used 3500 simplified characters.
+- 'simplified-xiaohe: xiaohe shuangpin for all simplified characters.
+- 'traditional-quanpin: quanpin for all traditional characters.")
+
 ;; variable defined by evil-snipe
 (defvar ::evil-snipe-aliases)
+
+;; dynamically loaded scheme
+(defvar -traditional-quanpin)
+(defvar -simplified-quanpin)
+(defvar -simplified-common)
+(defvar -simplified-xiaohe)
+(defvar -punctuation-alist)
+
+(defconst -this-file load-file-name
+  "This file name.")
+
+(defun -load-char-table-file (char-table-file)
+  "Load char table file CHAR-TABLE-FILE."
+  (load (expand-file-name char-table-file (file-name-directory -this-file))))
+
+(defun -get-char-table ()
+  "Get char table for simplified Chinese."
+  (cond
+   (; use simplified quanpin
+    (eq scheme 'simplified-quanpin)
+    (unless (boundp 'evil-pinyin--simplified-quanpin)
+      (-load-char-table-file "simplified-quanpin"))
+    -simplified-quanpin)
+   (; use simplified common
+    (eq scheme 'simplified-common)
+    (unless (boundp 'evil-pinyin--simplified-common)
+      (-load-char-table-file "simplified-common"))
+    -simplified-common)
+   (; use simplified xiaohe
+    (eq scheme 'simplified-xiaohe)
+    (unless (boundp 'evil-pinyin--simplified-xiaohe)
+      (-load-char-table-file "simplified-xiaohe"))
+    -simplified-xiaohe)
+   (; use tradtional quanpin
+    (eq scheme 'traditional-quanpin)
+    (unless (boundp 'evil-pinyin--traditional-quanpin)
+      (-load-char-table-file "traditional-quanpin"))
+    -simplified-xiaohe)))
+
+(defun -get-punctuation-alist()
+  "Get punctuation alist."
+  (unless (boundp 'evil-pinyin--punctuation-alist)
+    (-load-char-table-file "punctuation"))
+  (-punctuation-alist))
+
+(defun -build-regexp-char
+    (char &optional no-punc-p only-chinese-p)
+  "Build regexp for a character CHAR.
+
+NO-PUNC-P: punctuations are not included.
+ONLY-CHINESE-P: English characters are not included."
+  (let ((diff (- char ?a))
+        regexp)
+    (if (or (>= diff 26) (< diff 0))
+        (or (and (not no-punc-p)
+                 (assoc-default
+                  char
+                  (-get-punctuation-alist)))
+            (regexp-quote (string char)))
+      (setq regexp (nth diff (-get-char-table)))
+      (if only-chinese-p
+          (if (string= regexp "")
+              regexp
+            (format "[%s]" regexp))
+        (format "[%c%s]" char
+                regexp)))))
+
+(defun -build-regexp-string
+    (str &optional no-punc-p only-chinese-p)
+  "Build regexp for a string STR.
+
+NO-PUNC-P: punctuations are not included.
+ONLY-CHINESE-P: English characters are not included."
+  (mapconcat
+   (lambda (c) (-build-regexp-char c no-punc-p only-chinese-p))
+   str
+   ""))
+
 
 (defun -build-regexp (thing)
   "Build regexp form THING for search."
   (cond
 
    ((integerp thing)
-    (pinyinlib-build-regexp-char
-     thing (not with-punctuation) with-traditional))
+    (-build-regexp-char
+     thing (not with-punctuation)))
 
    ((stringp thing)
-    (pinyinlib-build-regexp-string
-     thing (not with-punctuation) with-traditional))))
+    (-build-regexp-string
+     thing (not with-punctuation)))))
 
 (evil-define-motion find-char (count char)
   "Move to the next COUNT'th occurrence of CHAR."
