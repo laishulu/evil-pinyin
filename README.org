@@ -27,10 +27,10 @@
 ```
 (use-package evil-pinyin
   :init
-  (setq evil-pinyin-scheme 'simplified-xiaohe)
+  ;;(setq evil-pinyin-scheme 'simplified-xiaohe)
 
   :config
-  (evil-select-search-module 'evil-search-module 'evil-search)
+  ;;(evil-select-search-module 'evil-search-module 'evil-search)
   (global-evil-pinyin-mode))
 ```
 
