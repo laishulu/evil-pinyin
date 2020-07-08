@@ -38,9 +38,14 @@
 ;;;###autoload
 (define-namespace evil-pinyin-
 
-(defvar with-search t
-  "Enable the /search/ feature.")
-(make-variable-buffer-local 'evil-pinyin-with-search)
+(defvar with-search-rule 'always
+  "Enable the /search/ feature.
+
+Possible values:
+- 'always: always disable pinyin search.
+- 'never: never enable pinyin search.
+- 'exclam: enable pinyin search when pattern started with `!'.")
+(make-variable-buffer-local 'evil-pinyin-with-search-rule)
 
 (defvar with-punctuation t
   "Include Chinese punctuation.")
@@ -105,7 +110,7 @@ Possible values:
   "Get punctuation alist."
   (unless (boundp 'evil-pinyin--punctuation-alist)
     (-load-char-table-file "punctuation"))
-  (-punctuation-alist))
+  -punctuation-alist)
 
 (defun -build-regexp-char
     (char &optional no-punc-p only-chinese-p)
@@ -301,9 +306,16 @@ ONLY-CHINESE-P: English characters are not included."
 (defun evil-ex-pattern-regex-advice (fn &rest args)
   "Advice for FN `evil-ex-pattern-regex' with ARGS args."
   (let ((re (apply fn args)))
-    (if (and mode re mode with-search
+    (if (and mode re mode
+             (cond (; always
+                    (eq with-search-rule 'always) t)
+                   (; never
+                    (eq with-search-rule 'never) nil)
+                   (; exclam
+                    (eq with-search-rule 'exclam)
+                    (and re (= (string-to-char re) ?!))))
              (not (string-match-p "\[.*+?[\\$]" re)))
-        (-build-regexp re)
+        (-build-regexp (if (eq with-search-rule 'exclam) (substring re 1) re))
       re)))
 
 (defun clear()

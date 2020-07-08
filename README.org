@@ -29,18 +29,19 @@
 (use-package evil-pinyin
   :init
   ;;(setq evil-pinyin-scheme 'simplified-xiaohe-all)
+  ;;(setq evil-pinyin-with-search-rule 'always)
 
   :config
   ;;(evil-select-search-module 'evil-search-module 'evil-search)
   (global-evil-pinyin-mode))
 ```
 
-| Variable                     | Description              | Default                  |
-|------------------------------+--------------------------+--------------------------|
-| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin-all~ |
-| evil-pinyin-with-search      | 打开 ~/~ 和 ~?~ 搜索功能 | ~t~                      |
-| evil-pinyin-with-punctuation | 包含符号.                | ~t~                      |
-|------------------------------+--------------------------+--------------------------|
+| Variable                     | Description              | Default                                          |
+|------------------------------+--------------------------+--------------------------------------------------|
+| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin-all~                         |
+| evil-pinyin-with-search-rule | 打开 ~/~ 和 ~?~ 搜索功能 | 'exclam.  感叹号开启，即: ~/!hy~ 可以匹配“汉语”  |
+| evil-pinyin-with-punctuation | 包含符号.                | ~t~                                              |
+|------------------------------+--------------------------+--------------------------------------------------|
 
 * Credit
 部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]] 和 [[https://github.com/cute-jumper/pinyinlib.el][pinyinlib]]
