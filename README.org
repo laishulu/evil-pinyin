@@ -25,7 +25,7 @@
 * Configure
 
 范例配置：
-```
+#+BEGIN_SRC lisp
 (use-package evil-pinyin
   :init
   ;;(setq evil-pinyin-scheme 'simplified-xiaohe-all)
@@ -34,7 +34,7 @@
   :config
   ;;(evil-select-search-module 'evil-search-module 'evil-search)
   (global-evil-pinyin-mode))
-```
+#+END_SRC
 
 | Variable                     | Description              | Default                                          |
 |------------------------------+--------------------------+--------------------------------------------------|
