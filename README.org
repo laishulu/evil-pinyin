@@ -11,7 +11,7 @@
 3. 支持 ~/~ 和 ~?~ 搜索任意长度的词组。注意： ~evil~ 的搜索模块默认使用了
    Emacs 原始的实现 ~isearch~, 需要切换成 ~evil~ 自己的实现 ~evil-search~ ：
    ~(evil-select-search-module 'evil-search-module 'evil-search)~ ，但有些包（如
-   [[https://github.com/hlissner/doom-emacs][~doom~]]）默认已切换。
+   [[https://github.com/hlissner/doom-emacs][doom]]）默认已切换。
 4. 支持多种拼音方案：简体字-全拼，常用3500简体字-全拼，简体字-双拼（小鹤，自然码，
    拼音加加，微软），繁字体-
    全拼。
