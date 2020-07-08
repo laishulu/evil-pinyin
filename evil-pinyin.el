@@ -61,10 +61,10 @@ Possible values:
 (defvar ::evil-snipe-aliases)
 
 ;; dynamically loaded scheme
-(defvar -traditional-quanpin)
-(defvar -simplified-quanpin)
-(defvar -simplified-common)
-(defvar -simplified-xiaohe)
+(defvar -simplified-quanpin-all)
+(defvar -simplified-quanpin-common)
+(defvar -simplified-xiaohe-all)
+(defvar -traditional-quanpin-all)
 (defvar -punctuation-alist)
 
 (defconst -this-file load-file-name
@@ -83,7 +83,7 @@ Possible values:
       (-load-char-table-file "simplified-quanpin-all"))
     -simplified-quanpin-all)
    (; use simplified common
-    (eq scheme 'simplified-common)
+    (eq scheme 'simplified-quanpin-common)
     (unless (boundp 'evil-pinyin--simplified-quanpin-common)
       (-load-char-table-file "simplified-quanpin-common"))
     -simplified-quanpin-common)
