@@ -13,8 +13,8 @@
    ~(evil-select-search-module 'evil-search-module 'evil-search)~ ，但有些包（如
    [[https://github.com/hlissner/doom-emacs][doom]]）默认已切换。
 4. 支持多种拼音方案：简体字-全拼，常用3500简体字-全拼，简体字-双拼（小鹤，自然码，
-   拼音加加，微软），繁字体-
-   全拼。
+   拼音加加，微软），繁字体-全拼。
+5. 支持自定义码表。
 
 * Install
 直接从 ~melpa~ 安装。
@@ -24,7 +24,7 @@
 
 * Configure
 
-范例配置：
+** 范例配置：
 #+BEGIN_SRC lisp
 (use-package evil-pinyin
   :init
@@ -36,12 +36,28 @@
   (global-evil-pinyin-mode))
 #+END_SRC
 
-| Variable                     | Description              | Default                                          |
-|------------------------------+--------------------------+--------------------------------------------------|
-| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin-all~                         |
-| evil-pinyin-with-search-rule | 打开 ~/~ 和 ~?~ 搜索功能 | 'exclam.  感叹号开启，即: ~/!hy~ 可以匹配“汉语”  |
-| evil-pinyin-with-punctuation | 包含符号.                | ~t~                                              |
-|------------------------------+--------------------------+--------------------------------------------------|
+** 一般变量
+| Variable                     | Description              | Default                                         |
+|------------------------------+--------------------------+-------------------------------------------------|
+| evil-pinyin-scheme           | 汉语拼音方案             | ~simplified-quanpin-all~                        |
+| evil-pinyin-with-search-rule | 打开 ~/~ 和 ~?~ 搜索功能 | 'exclam.  感叹号开启，即: ~/!hy~ 可以匹配“汉语” |
+| evil-pinyin-with-punctuation | 包含符号.                | ~t~                                             |
+|------------------------------+--------------------------+-------------------------------------------------|
+
+** 自定义码表
+#+BEGIN_SRC lisp
+(setq my-char-table
+      (list
+      ;; A
+      "YOU CHAR TABLE FOR A"
+      ;; B
+      "YOU CHAR TABLE FOR B"
+      ;; ....
+      ;; Z
+      "YOU CHAR TABLE FOR Z"))
+(setq-default evil-pinyin-scheme nil)
+(setq-default evil-pinyin-char-table my-char-table)
+#+BEGIN_SRC lisp
 
 * Credit
 部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]] 和 [[https://github.com/cute-jumper/pinyinlib.el][pinyinlib]]

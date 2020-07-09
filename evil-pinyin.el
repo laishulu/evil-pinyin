@@ -50,10 +50,15 @@ Possible values:
 (defvar with-punctuation t
   "Include Chinese punctuation.")
 
+(defvar char-table nil
+  "User specified char table.")
+(make-variable-buffer-local 'evil-pinyin-char-table)
+
 (defvar scheme 'simplified-quanpin-all
   "Pinyin scheme.
 
 Possible values:
+- nil: user specified char table.
 - 'simplified-quanpin-all: quanpin for all simplified characters.
 - 'simplified-quanpin-common: quanpin of common used 3500 simplified characters.
 - 'simplified-xiaohe-all: xiaohe shuangpin for all simplified characters.
@@ -61,6 +66,7 @@ Possible values:
 - 'simplified-ziranma-all: ziranma shuangpin for all simplified characters.
 - 'simplified-weiruan-all: weiruan shuangpin for all simplified characters.
 - 'traditional-quanpin-all: quanpin for all traditional characters.")
+(make-variable-buffer-local 'evil-pinyin-scheme)
 
 ;; variable defined by evil-snipe
 (defvar ::evil-snipe-aliases)
@@ -104,7 +110,10 @@ Possible values:
     (eq scheme 'traditional-quanpin-all)
     (unless (boundp 'evil-pinyin--traditional-quanpin-all)
       (-load-char-table-file "traditional-quanpin-all"))
-    -traditional-quanpin-all)))
+    -traditional-quanpin-all)
+   (; user specified char table
+    (not scheme)
+    char-table)))
 
 (defun -get-punctuation-alist()
   "Get punctuation alist."
