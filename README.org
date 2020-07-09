@@ -48,16 +48,16 @@
 #+BEGIN_SRC lisp
 (setq my-char-table
       (list
-      ;; A
-      "YOU CHAR TABLE FOR A"
-      ;; B
-      "YOU CHAR TABLE FOR B"
-      ;; ....
-      ;; Z
-      "YOU CHAR TABLE FOR Z"))
+       ;; A
+       "YOU CHAR TABLE FOR A"
+       ;; B
+       "YOU CHAR TABLE FOR B"
+       ;; ....
+       ;; Z
+       "YOU CHAR TABLE FOR Z"))
 (setq-default evil-pinyin-scheme nil)
 (setq-default evil-pinyin-char-table my-char-table)
-#+BEGIN_SRC lisp
+#+END_SRC
 
 * Credit
 部分代码来自于 [[https://github.com/cute-jumper/evil-find-char-pinyin][evil-find-char-pinyin]] 和 [[https://github.com/cute-jumper/pinyinlib.el][pinyinlib]]
