@@ -104,7 +104,7 @@ Possible values:
     (eq scheme 'traditional-quanpin-all)
     (unless (boundp 'evil-pinyin--traditional-quanpin-all)
       (-load-char-table-file "traditional-quanpin-all"))
-    -simplified-xiaohe-all)))
+    -traditional-quanpin-all)))
 
 (defun -get-punctuation-alist()
   "Get punctuation alist."
