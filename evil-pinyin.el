@@ -38,14 +38,18 @@
 ;;;###autoload
 (define-namespace evil-pinyin-
 
-(defvar with-search-rule 'always
+(defvar with-search-rule 'custom
   "Enable the /search/ feature.
 
 Possible values:
 - 'always: always disable pinyin search.
 - 'never: never enable pinyin search.
-- 'exclam: enable pinyin search when pattern started with `!'.")
+- 'custom: enable pinyin search when pattern started with, default `!'.")
 (make-variable-buffer-local 'evil-pinyin-with-search-rule)
+
+(defvar start-pattern "!"
+  "`evil-pinyin' start pattern.")
+(make-variable-buffer-local 'evil-pinyin-start-pattern)
 
 (defvar with-punctuation t
   "Include Chinese punctuation.")
@@ -328,11 +332,11 @@ ONLY-CHINESE-P: English characters are not included."
                     (eq with-search-rule 'always) t)
                    (; never
                     (eq with-search-rule 'never) nil)
-                   (; exclam
-                    (eq with-search-rule 'exclam)
-                    (and re (= (string-to-char re) ?!))))
+                   (; custom
+                    (eq with-search-rule 'custom)
+                    (and re (= (string-to-char re) (string-to-char start-pattern)))))
              (not (string-match-p "\[.*+?[\\$]" re)))
-        (-build-regexp (if (eq with-search-rule 'exclam) (substring re 1) re))
+        (-build-regexp (if (eq with-search-rule 'custom) (substring re 1) re))
       re)))
 
 (defun clear()
