@@ -65,7 +65,8 @@ Possible values:
 - 'simplified-pinyinjiajia-all: pinyinjiajia shuangpin for all simplified characters.
 - 'simplified-ziranma-all: ziranma shuangpin for all simplified characters.
 - 'simplified-weiruan-all: weiruan shuangpin for all simplified characters.
-- 'traditional-quanpin-all: quanpin for all traditional characters.")
+- 'traditional-quanpin-all: quanpin for all traditional characters.
+- 'simplified-traditional-quanpin-all: quanpin for all simplified and traditional characters.")
 (make-variable-buffer-local 'evil-pinyin-scheme)
 
 ;; variable defined by evil-snipe
@@ -76,6 +77,7 @@ Possible values:
 (defvar -simplified-quanpin-common)
 (defvar -simplified-xiaohe-all)
 (defvar -traditional-quanpin-all)
+(defvar -simplified-traditional-quanpin-all)
 (defvar -punctuation-alist)
 
 (defconst -this-file load-file-name
@@ -111,6 +113,11 @@ Possible values:
     (unless (boundp 'evil-pinyin--traditional-quanpin-all)
       (-load-char-table-file "traditional-quanpin-all"))
     -traditional-quanpin-all)
+   (; use simplified and tradtional quanpin
+    (eq scheme 'simplified-traditional-quanpin-all)
+    (unless (boundp 'evil-pinyin--simplified-traditional-quanpin-all)
+      (-load-char-table-file "simplified-traditional-quanpin-all"))
+    -simplified-traditional-quanpin-all)
    (; user specified char table
     (not scheme)
     char-table)))
