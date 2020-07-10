@@ -49,6 +49,7 @@ Possible values:
 
 (defvar with-punctuation t
   "Include Chinese punctuation.")
+(make-variable-buffer-local 'evil-pinyin-with-punctuation)
 
 (defvar char-table nil
   "User specified char table.")
