@@ -44,10 +44,10 @@
 Possible values:
 - 'always: always disable pinyin search.
 - 'never: never enable pinyin search.
-- 'custom: enable pinyin search when pattern started with, default `!'.")
+- 'custom: enable pinyin search when pattern started with, default `:'.")
 (make-variable-buffer-local 'evil-pinyin-with-search-rule)
 
-(defvar start-pattern "!"
+(defvar start-pattern ":"
   "`evil-pinyin' start pattern.")
 (make-variable-buffer-local 'evil-pinyin-start-pattern)
 

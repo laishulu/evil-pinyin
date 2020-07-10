@@ -37,13 +37,13 @@
 #+END_SRC
 
 ** 一般变量
-| Variable                     | Buffer local | Description              | Default                                     |
-|------------------------------+--------------+--------------------------+---------------------------------------------|
-| evil-pinyin-scheme           | yes          | 汉语拼音方案             | ~simplified-quanpin-all~                    |
-| evil-pinyin-with-search-rule | yes          | 打开 ~/~ 和 ~?~ 搜索功能 | 'custom.                                    |
-| evil-pinyin-start-pattern    | yes          | 搜索起始符号             | 默认为感叹号开启，即: ~/!hy~ 可以匹配“汉语” |
-| evil-pinyin-with-punctuation | yes          | 包含符号.                | ~t~                                         |
-|------------------------------+--------------+--------------------------+---------------------------------------------|
+| Variable                     | Buffer local | Description              | Default                                   |
+|------------------------------+--------------+--------------------------+-------------------------------------------|
+| evil-pinyin-scheme           | yes          | 汉语拼音方案             | ~simplified-quanpin-all~                  |
+| evil-pinyin-with-search-rule | yes          | 打开 ~/~ 和 ~?~ 搜索功能 | 'custom.                                  |
+| evil-pinyin-start-pattern    | yes          | 搜索起始符号             | 默认为冒号开启，即: ~/:hy~ 可以匹配“汉语” |
+| evil-pinyin-with-punctuation | yes          | 包含符号.                | ~t~                                       |
+|------------------------------+--------------+--------------------------+-------------------------------------------|
 
 ** 自定义码表
 #+BEGIN_SRC lisp
