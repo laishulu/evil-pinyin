@@ -42,7 +42,7 @@
   "Enable the /search/ feature.
 
 Possible values:
-- 'always: always disable pinyin search.
+- 'always: always enable pinyin search.
 - 'never: never enable pinyin search.
 - 'custom: enable pinyin search when pattern started with, default `:'.")
 (make-variable-buffer-local 'evil-pinyin-with-search-rule)
