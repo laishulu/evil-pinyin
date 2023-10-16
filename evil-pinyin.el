@@ -28,17 +28,9 @@
 
 ;;; Code:
 
-;; `define-namespace' is autoloaded, so there's no need to require `names'.
-;; However, requiring it here means it will also work for people who don't
-;; install through package.el.
-(eval-when-compile (require 'names))
-
 (require 'evil)
 
-;;;###autoload
-(define-namespace evil-pinyin-
-
-(defvar with-search-rule 'custom
+(defvar evil-pinyin-with-search-rule 'custom
   "Enable the /search/ feature.
 
 Possible values:
@@ -47,19 +39,19 @@ Possible values:
 - 'custom: enable pinyin search when pattern started with, default `:'.")
 (make-variable-buffer-local 'evil-pinyin-with-search-rule)
 
-(defvar start-pattern ":"
+(defvar evil-pinyin-start-pattern ":"
   "`evil-pinyin' start pattern.")
 (make-variable-buffer-local 'evil-pinyin-start-pattern)
 
-(defvar with-punctuation t
+(defvar evil-pinyin-with-punctuation t
   "Include Chinese punctuation.")
 (make-variable-buffer-local 'evil-pinyin-with-punctuation)
 
-(defvar char-table nil
+(defvar evil-pinyin-char-table nil
   "User specified char table.")
 (make-variable-buffer-local 'evil-pinyin-char-table)
 
-(defvar scheme 'simplified-quanpin-all
+(defvar evil-pinyin-scheme 'simplified-quanpin-all
   "Pinyin scheme.
 
 Possible values:
@@ -78,62 +70,63 @@ Possible values:
 (defvar ::evil-snipe-aliases)
 
 ;; dynamically loaded scheme
-(defvar -simplified-quanpin-all)
-(defvar -simplified-quanpin-common)
-(defvar -simplified-xiaohe-all)
-(defvar -traditional-quanpin-all)
-(defvar -simplified-traditional-quanpin-all)
-(defvar -punctuation-alist)
+(defvar evil-pinyin--simplified-quanpin-all)
+(defvar evil-pinyin--simplified-quanpin-common)
+(defvar evil-pinyin--simplified-xiaohe-all)
+(defvar evil-pinyin--traditional-quanpin-all)
+(defvar evil-pinyin--simplified-traditional-quanpin-all)
+(defvar evil-pinyin--punctuation-alist)
 
-(defconst -this-file load-file-name
+(defconst evil-pinyin--this-file load-file-name
   "This file name.")
 
-(defun -load-char-table-file (char-table-file)
+(defun evil-pinyin--load-char-table-file (char-table-file)
   "Load char table file CHAR-TABLE-FILE."
-  (load (expand-file-name char-table-file (file-name-directory -this-file))))
+  (load (expand-file-name char-table-file (file-name-directory
+                                            evil-pinyin--this-file))))
 
-(defun -get-char-table ()
+(defun evil-pinyin--get-char-table ()
   "Get char table for simplified Chinese."
   (cond
    (; use simplified quanpin
-    (eq scheme 'simplified-quanpin-all)
+    (eq evil-pinyin-scheme 'simplified-quanpin-all)
     (unless (boundp 'evil-pinyin--simplified-quanpin-all)
-      (-load-char-table-file "simplified-quanpin-all"))
-    -simplified-quanpin-all)
+      (evil-pinyin--load-char-table-file "simplified-quanpin-all"))
+    evil-pinyin--simplified-quanpin-all)
    (; use simplified common
-    (eq scheme 'simplified-quanpin-common)
+    (eq evil-pinyin-scheme 'simplified-quanpin-common)
     (unless (boundp 'evil-pinyin--simplified-quanpin-common)
-      (-load-char-table-file "simplified-quanpin-common"))
-    -simplified-quanpin-common)
+      (evil-pinyin--load-char-table-file "simplified-quanpin-common"))
+    evil-pinyin--simplified-quanpin-common)
    (; use simplified xiaohe
-    (memq scheme (list 'simplified-xiaohe-all
+    (memq evil-pinyin-scheme (list 'simplified-xiaohe-all
                        'simplified-pinyinjiajia-all
                        'simplified-ziranma-all
                        'simplified-weiruan-all))
     (unless (boundp 'evil-pinyin--simplified-xiaohe-all)
-      (-load-char-table-file "simplified-xiaohe-all"))
-    -simplified-xiaohe-all)
+      (evil-pinyin--load-char-table-file "simplified-xiaohe-all"))
+    evil-pinyin--simplified-xiaohe-all)
    (; use tradtional quanpin
-    (eq scheme 'traditional-quanpin-all)
+    (eq evil-pinyin-scheme 'traditional-quanpin-all)
     (unless (boundp 'evil-pinyin--traditional-quanpin-all)
-      (-load-char-table-file "traditional-quanpin-all"))
-    -traditional-quanpin-all)
+      (evil-pinyin--load-char-table-file "traditional-quanpin-all"))
+    evil-pinyin--traditional-quanpin-all)
    (; use simplified and tradtional quanpin
-    (eq scheme 'simplified-traditional-quanpin-all)
+    (eq evil-pinyin-scheme 'simplified-traditional-quanpin-all)
     (unless (boundp 'evil-pinyin--simplified-traditional-quanpin-all)
-      (-load-char-table-file "simplified-traditional-quanpin-all"))
-    -simplified-traditional-quanpin-all)
+      (evil-pinyin--load-char-table-file "simplified-traditional-quanpin-all"))
+    evil-pinyin--simplified-traditional-quanpin-all)
    (; user specified char table
-    (not scheme)
-    char-table)))
+    (not evil-pinyin-scheme)
+    evil-pinyin-char-table)))
 
-(defun -get-punctuation-alist()
+(defun evil-pinyin--get-punctuation-alist()
   "Get punctuation alist."
   (unless (boundp 'evil-pinyin--punctuation-alist)
-    (-load-char-table-file "punctuation"))
-  -punctuation-alist)
+    (evil-pinyin--load-char-table-file "punctuation"))
+  evil-pinyin--punctuation-alist)
 
-(defun -build-regexp-char
+(defun evil-pinyin--build-regexp-char
     (char &optional no-punc-p only-chinese-p)
   "Build regexp for a character CHAR.
 
@@ -145,9 +138,9 @@ ONLY-CHINESE-P: English characters are not included."
         (or (and (not no-punc-p)
                  (assoc-default
                   char
-                  (-get-punctuation-alist)))
+                  (evil-pinyin--get-punctuation-alist)))
             (regexp-quote (string char)))
-      (setq regexp (nth diff (-get-char-table)))
+      (setq regexp (nth diff (evil-pinyin--get-char-table)))
       (if only-chinese-p
           (if (string= regexp "")
               regexp
@@ -155,29 +148,29 @@ ONLY-CHINESE-P: English characters are not included."
         (format "[%c%s]" char
                 regexp)))))
 
-(defun -build-regexp-string
+(defun evil-pinyin--build-regexp-string
     (str &optional no-punc-p only-chinese-p)
   "Build regexp for a string STR.
 
 NO-PUNC-P: punctuations are not included.
 ONLY-CHINESE-P: English characters are not included."
   (mapconcat
-   (lambda (c) (-build-regexp-char c no-punc-p only-chinese-p))
+   (lambda (c) (evil-pinyin--build-regexp-char c no-punc-p only-chinese-p))
    str
    ""))
 
 
-(defun -build-regexp (thing)
+(defun evil-pinyin--build-regexp (thing)
   "Build regexp form THING for search."
   (cond
 
    ((integerp thing)
-    (-build-regexp-char
-     thing (not with-punctuation)))
+    (evil-pinyin--build-regexp-char
+     thing (not evil-pinyin-with-punctuation)))
 
    ((stringp thing)
-    (-build-regexp-string
-     thing (not with-punctuation)))))
+    (evil-pinyin--build-regexp-string
+     thing (not evil-pinyin-with-punctuation)))))
 
 (evil-define-motion find-char (count char)
   "Move to the next COUNT'th occurrence of CHAR."
@@ -191,7 +184,7 @@ ONLY-CHINESE-P: English characters are not included."
       (unless
           (prog1
               (search-forward-regexp
-               (-build-regexp char)
+               (evil-pinyin--build-regexp char)
                (unless evil-cross-lines
                  (if fwd
                      (line-end-position)
@@ -243,11 +236,11 @@ ONLY-CHINESE-P: English characters are not included."
              (= count 1)
              (or (and fwd (or (= (char-after (1+ (point))) char)
                               (string-match-p
-                               (-build-regexp char)
+                               (evil-pinyin--build-regexp char)
                                (string (char-after (1+ (point)))))))
                  (and (not fwd) (or (= (char-before) char)
                                     (string-match-p
-                                     (-build-regexp char)
+                                     (evil-pinyin--build-regexp char)
                                      (string (char-before))))))
              (setq count (1+ count)))
         (funcall cmd (if fwd count (- count)) char)
@@ -307,7 +300,7 @@ ONLY-CHINESE-P: English characters are not included."
 ;; ---------------------- ;;
 ;; evil-snipe integration ;;
 ;; ---------------------- ;;
-(defun -snipe-process-key (key)
+(defun evil-pinyin--snipe-process-key (key)
   "Process the snipe KEY."
   (when (featurep 'evil-snipe)
     (let ((regex-p (assoc key evil-snipe-aliases))
@@ -315,13 +308,13 @@ ONLY-CHINESE-P: English characters are not included."
       (cons keystr
             (if regex-p (elt regex-p 1)
               (if mode
-                  (-build-regexp keystr)
+                  (evil-pinyin--build-regexp keystr)
                 keystr))))))
 
 (defun evil-snipe--process-key-advice (fn key)
   "Advice for FN `evil-snipe--process-key' with KEY."
   (if mode
-      (funcall #'-snipe-process-key key)
+      (funcall #'evil-pinyin--snipe-process-key key)
     (funcall fn key)))
 
 (defun evil-ex-pattern-regex-advice (fn &rest args)
@@ -329,24 +322,23 @@ ONLY-CHINESE-P: English characters are not included."
   (let ((re (apply fn args)))
     (if (and mode re mode
              (cond (; always
-                    (eq with-search-rule 'always) t)
+                    (eq evil-pinyin-with-search-rule 'always) t)
                    (; never
-                    (eq with-search-rule 'never) nil)
+                    (eq evil-pinyin-with-search-rule 'never) nil)
                    (; custom
-                    (eq with-search-rule 'custom)
-                    (and re (= (string-to-char re) (string-to-char start-pattern)))))
+                    (eq evil-pinyin-with-search-rule 'custom)
+                    (and re (= (string-to-char re)
+                               (string-to-char evil-pinyin-start-pattern)))))
              (not (string-match-p "\[.*+?[\\$]" re)))
-        (-build-regexp (if (eq with-search-rule 'custom) (substring re 1) re))
+        (evil-pinyin--build-regexp
+          (if (eq evil-pinyin-with-search-rule 'custom) (substring re 1) re))
       re)))
 
-(defun clear()
+(defun evil-pinyin-clear()
   "Clear all pollutions."
   (advice-remove 'evil-ex-pattern-regex #'evil-ex-pattern-regex-advice)
   (when (featurep 'evil-snipe)
     (advice-remove 'evil-snipe--process-key #'evil-snipe--process-key-advice)))
-
-;; end of namespace
-)
 
 :autoload
 (define-globalized-minor-mode
