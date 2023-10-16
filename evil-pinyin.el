@@ -254,7 +254,7 @@ ONLY-CHINESE-P: English characters are not included."
   (repeat-find-char (- (or count 1))))
 
 :autoload
-(define-minor-mode mode
+(define-minor-mode evil-pinyin-mode
   "Evil search or find Chinese characters by pinyin."
   :init-value nil
   (advice-add 'evil-ex-pattern-regex :around
@@ -262,7 +262,7 @@ ONLY-CHINESE-P: English characters are not included."
   (when (featurep 'evil-snipe)
     (advice-add 'evil-snipe--process-key :around
                 #'evil-snipe--process-key-advice))
-  (if (and mode evil-motion-state-local-map)
+  (if (and evil-pinyin-mode evil-motion-state-local-map)
       (progn
         (define-key evil-motion-state-local-map
           [remap evil-find-char]
@@ -307,20 +307,20 @@ ONLY-CHINESE-P: English characters are not included."
           (keystr (char-to-string key)))
       (cons keystr
             (if regex-p (elt regex-p 1)
-              (if mode
+              (if evil-pinyin-mode
                   (evil-pinyin--build-regexp keystr)
                 keystr))))))
 
 (defun evil-snipe--process-key-advice (fn key)
   "Advice for FN `evil-snipe--process-key' with KEY."
-  (if mode
+  (if evil-pinyin-mode
       (funcall #'evil-pinyin--snipe-process-key key)
     (funcall fn key)))
 
 (defun evil-ex-pattern-regex-advice (fn &rest args)
   "Advice for FN `evil-ex-pattern-regex' with ARGS args."
   (let ((re (apply fn args)))
-    (if (and mode re mode
+    (if (and evil-pinyin-mode re
              (cond (; always
                     (eq evil-pinyin-with-search-rule 'always) t)
                    (; never
